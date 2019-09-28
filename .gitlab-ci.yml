@@ -1,0 +1,10 @@
+stages:
+  - test
+
+run_test:
+  image: node:10
+  stage: test
+  script:
+    - npm install
+    - npm test
+
