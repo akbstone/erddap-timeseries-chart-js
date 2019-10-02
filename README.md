@@ -14,33 +14,33 @@ Dependencies
 Examples
 ---
 
-Create new chart:
+Create timeseries chart:
+
+```
+
+```
+
+Create timeseries and QC chart:
+
+```
+
+```
 
 
-Create new chart with QC data:
+Create QC-only chart:
 
+```
+
+```
 
 
 API
 ---
 
+- ``data(arr)``
 - ``x(fn)``
 - ``y(fn)``
 - ``x_label(str)``
 - ``y_label(str)``
-- 
-```
-	qc_options(arr[
-			{
-				color:'#FF0000',
-				label:'Fail',
-				code:4
-			},
-			{
-
-			}
-
-		]
-	)
-```
-- 
+- ``qc_options(arr)``
+	- qc_option: ``{code:4,color:#FF0000,label:'Fail'}``
