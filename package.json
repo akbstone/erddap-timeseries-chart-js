@@ -1,5 +1,5 @@
 {
-  "name": "d3-series-stats",
+  "name": "erddap-timeseries-chart",
   "version": "0.0.1",
   "description": "{DESCRIPTION}",
   "keywords": [
@@ -7,20 +7,20 @@
     "d3-module"
   ],
   "license": "BSD-3-Clause",
-  "main": "build/axiom-series-chart.js",
   "jsnext:main": "index",
-  "homepage": "https://github.com/{USERNAME}/axiom-timeseries-chart",
+  "homepage": "https://github.com/{USERNAME}/erddap-timeseries-chart",
   "repository": {
     "type": "git",
-    "url": "https://github.com/{USERNAME}/axiom-timeseries-chart"
+    "url": "https://github.com/{USERNAME}/erddap-timeseries-chart"
   },
+  "module":"index",
+  "files": [
+    "src/**/*.js"
+  ],
   "scripts": {
-    "buildNOTYET": "mkdir -p build && node -e 'process.stdout.write(\"var version = \\\"\" + require(\"./package.json\").version + \"\\\"; export * from \\\"../index\\\"; export {version};\");' > build/bundle.js && rollup -c rollup.config.js -f umd --amd.id d3-series-stats -n d3_svg -o build/d3-series-stats.js -- build/bundle.js",
     "build": "rm -rf build && mkdir build && rollup -c",
-    "pretest": "npm run build",
-    "test": "tape test/**/*-test.js | tap-summary",
-    "prepare": "npm run test && uglifyjs build/d3-series-stats.js -c -m -o build/d3-series-stats.min.js",
-    "postpublish": "zip -j build/d3-series-stats.zip -- LICENSE README.md build/d3-series-stats.js build/d3-series-stats.min.js"
+    "pretest": "rollup -c",
+    "test": "tape test/**/*-test.js | tap-summary"
   },
   "devDependencies": {
     "rollup": "1.1.0",
@@ -30,6 +30,9 @@
     "uglify-js": "3.5.4"
   },
   "dependencies": {
-
+    "d3-array": "^2.3.2",
+    "d3-selection": "^1.4.0",
+    "d3-shape": "^1.3.5",
+    "d3-time": "^1.1.0"
   }
 }

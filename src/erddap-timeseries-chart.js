@@ -1,5 +1,6 @@
-
-
+import d3 from "d3-selection";
+//import d3Shape from "d3-shape";
+//import d3Time from "d3-time";
 
 export default function(){
 
@@ -14,7 +15,7 @@ export default function(){
 
 
 	function chart(){
-		
+
 
 		
 		
@@ -90,6 +91,8 @@ export default function(){
 		qc_options = _;
 		return qc_options;
 	}
+
+	return chart;
 
 
 

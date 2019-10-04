@@ -1,17 +1,16 @@
 export default {
-  input: 'index.js',
-  external: [ 'd3-array','d3-time','d3-time-format','underscore' ],
+  input: 'src/index.js',
+  external: [ 'd3-selection','d3-array','d3-shape','d3-selection','d3-time' ],
   output:{
     format: 'umd',
     name:'d3',
-    file: 'build/d3-series-stats.js',
-    moduleId:'d3-series-stats',
+    file: 'build/erddap-timeseries-chart.js',
+    moduleId:'erddap-timeseries-chart',
     extend:true,
     globals:{
       'd3-array':'d3',
-      'd3-time':'d3',
-      'd3-time-format':'d3',
-      'underscore':'_'
+      'd3-shape':'d3',
+      'd3-selection':'d3'
     }
   }
 }
