@@ -19,7 +19,7 @@
     "src/**/*.js"
   ],
   "scripts": {
-    "build": "rm -rf build && mkdir build && rollup -c",
+    "build": "rm -rf build && mkdir build && rollup -c && rm -rf dist && mkdir dist && rollup --config rollup.dist.config.js && rollup --config rollup.dist.full.config.js",
     "pretest": "rollup -c",
     "test": "tape test/**/*-test.js | tap-summary"
   },
