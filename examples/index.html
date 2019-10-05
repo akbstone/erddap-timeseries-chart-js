@@ -1,0 +1,93 @@
+<html>
+	<head>
+		<script src="https://d3js.org/d3-selection.v1.min.js"></script>
+        <script src="https://d3js.org/d3-path.v1.min.js"></script>
+        <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time.v1.min.js"></script>
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-format.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+        <script src="https://d3js.org/d3-scale.v3.min.js"></script>
+
+        <script src="https://d3js.org/d3-axis.v1.js"></script>
+
+		<script src="../build/erddap-timeseries-chart.js"></script>
+		
+	</head>
+	<body>
+		<div class="line-chart"></div>
+        <script type="text/javascript">
+            let width = d3.select('.line-chart').node().offsetWidth,
+	            height = 300,
+                data = [
+                    {
+                        time:new Date(2019,10,1),
+                        value:10,
+                        qc:1
+                    },
+                    {
+                        time:new Date(2019,10,2),
+                        value:11,
+                        qc:3
+                    },
+                    {
+                        time:new Date(2019,10,3),
+                        value:4,
+                        qc:3
+                    },
+                    {
+                        time:new Date(2019,10,4),
+                        value:5,
+                        qc:4
+                    },
+                    {
+                        time:new Date(2019,10,5),
+                        value:2,
+                        qc:1
+                    }
+
+                ],
+
+                qc_options = [
+						{
+							code:1,
+							color:'green',
+							label:'Pass'
+						},
+						{
+							code:3,
+							color:'orange',
+							label:'Suspect'
+						},
+						{
+							code:4,
+							color:'red',
+							label:'Fail'
+						}
+					],
+                
+                chart = d3.erddap_timeseries_chart()
+                        .data(data)
+                        .width(width)
+                        .height(height)
+                        .x(d=>d.time)
+                        .y(d=>d.value)
+                        .chartType('line'),
+
+	            chartSvg = d3.select('div.line-chart')
+                    .append('svg')
+                    .attr('width',width)
+                    .attr('height',height)
+                    .call(chart);
+                
+                
+
+		</script>
+
+
+	</body>
+</html>

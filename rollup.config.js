@@ -1,6 +1,6 @@
 export default {
   input: 'src/index.js',
-  external: [ 'd3-selection','d3-array','d3-shape','d3-selection','d3-time' ],
+  external: [ 'd3-selection','d3-array','d3-shape','d3-axis','d3-scale' ],
   output:{
     format: 'umd',
     name:'d3',
@@ -10,7 +10,9 @@ export default {
     globals:{
       'd3-array':'d3',
       'd3-shape':'d3',
-      'd3-selection':'d3'
+      'd3-selection':'d3',
+      'd3-axis':'d3',
+      'd3-scale':'d3'
     }
   }
 }
