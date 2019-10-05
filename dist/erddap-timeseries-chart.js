@@ -1,10 +1,10 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-select'), require('d3-shape'), require('d3-axis')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'd3-select', 'd3-shape', 'd3-axis'], factory) :
-	(global = global || self, factory(global.d3 = global.d3 || {}, global.d3Select));
-}(this, function (exports, d3Select) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-shape'), require('d3-array'), require('d3-scale'), require('d3-axis')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'd3-shape', 'd3-array', 'd3-scale', 'd3-axis'], factory) :
+	(global = global || self, factory(global.d3 = global.d3 || {}, global.d3));
+}(this, function (exports, d3Shape) { 'use strict';
 
-	d3Select = d3Select && d3Select.hasOwnProperty('default') ? d3Select['default'] : d3Select;
+	d3Shape = d3Shape && d3Shape.hasOwnProperty('default') ? d3Shape['default'] : d3Shape;
 
 	function chart(){
 
