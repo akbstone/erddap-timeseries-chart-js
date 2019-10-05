@@ -1,6 +1,8 @@
-import d3Select from "d3-select";
+import d3Array from "d3-array";
+import d3Select from "d3-selection";
 import d3Shape from "d3-shape";
 import d3Axis from "d3-axis";
+import d3Scale from "d3-scale";
 
 function chart(){
 
@@ -29,8 +31,8 @@ function chart(){
 
 	function calculateDomains(){
 		if(x && y && data){
-			xDomain = d3.extent(data,x);
-			yDomain = d3.extent(data,y)
+			xDomain = d3Array.extent(data,x);
+			yDomain = d3Array.extent(data,y)
 		}
 	}
 
@@ -58,7 +60,7 @@ function chart(){
 		x = _;
 
 		if(data){
-			xDomain = d3.extent(data,x)
+			xDomain = d3Array.extent(data,x)
 		}
 		return chart;
 
@@ -87,7 +89,7 @@ function chart(){
 				
 		z = _;
 		if(data){
-			z_domain = d3.extent(data,z)
+			z_domain = d3Array.extent(data,z)
 		}
 		return chart;
 
@@ -199,27 +201,27 @@ function chart(){
 		
 		
 		if(xDomain && yDomain){
-			let xScale = d3.scaleUtc()
+			let xScale = d3Scale.scaleUtc()
 					.domain(xDomain)
 					.range([margin.left, width - margin.right]),
 
-				yScale = d3.scaleLinear()
+				yScale = d3Scale.scaleLinear()
 					.domain(yDomain).nice()
 					.range([height - margin.bottom, margin.top]),
 				
 				xAxis = g => g
 					.attr("transform", `translate(0,${height - margin.bottom})`)
-					.call(d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
+					.call(d3Axis.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
 					//need to add xLabel if exists here
 				
 
 				yAxis = g => g
 					.attr("transform", `translate(${margin.left},0)`)
-					.call(d3.axisLeft(yScale))
+					.call(d3Axis.axisLeft(yScale))
 					.call(g => g.select(".domain").remove()),
 					//add yLabel here
 				
-				line = d3.line()
+				line = d3Shape.line()
 					.defined(d => !isNaN(+x(d)))
 					.x(d=>xScale(x(d)))
 					.y(d=>yScale(y(d)));
