@@ -1,13 +1,8 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-array'), require('d3-selection'), require('d3-shape'), require('d3-axis'), require('d3-scale')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-selection', 'd3-shape', 'd3-axis', 'd3-scale'], factory) :
-	(global = global || self, factory(global.d3 = global.d3 || {}, global.d3, global.d3, global.d3, global.d3, global.d3));
-}(this, function (exports, d3Array, d3Selection, d3Shape, d3Axis, d3Scale) { 'use strict';
-
-	d3Array = d3Array && d3Array.hasOwnProperty('default') ? d3Array['default'] : d3Array;
-	d3Shape = d3Shape && d3Shape.hasOwnProperty('default') ? d3Shape['default'] : d3Shape;
-	d3Axis = d3Axis && d3Axis.hasOwnProperty('default') ? d3Axis['default'] : d3Axis;
-	d3Scale = d3Scale && d3Scale.hasOwnProperty('default') ? d3Scale['default'] : d3Scale;
+	(global = global || self, factory(global.d3 = global.d3 || {}));
+}(this, function (exports) { 'use strict';
 
 	function chart(){
 
@@ -33,8 +28,8 @@
 
 		function calculateDomains(){
 			if(x && y && data){
-				xDomain = d3Array.extent(data,x);
-				yDomain = d3Array.extent(data,y);
+				xDomain = d3.extent(data,x);
+				yDomain = d3.extent(data,y);
 			}
 		}
 
@@ -62,7 +57,7 @@
 			x = _;
 
 			if(data){
-				xDomain = d3Array.extent(data,x);
+				xDomain = d3.extent(data,x);
 			}
 			return chart;
 
@@ -91,7 +86,7 @@
 					
 			z = _;
 			if(data){
-				z_domain = d3Array.extent(data,z);
+				z_domain = d3.extent(data,z);
 			}
 			return chart;
 
@@ -200,27 +195,27 @@
 			
 			
 			if(xDomain && yDomain){
-				let xScale = d3Scale.scaleUtc()
+				let xScale = d3.scaleUtc()
 						.domain(xDomain)
 						.range([margin.left, width - margin.right]),
 
-					yScale = d3Scale.scaleLinear()
+					yScale = d3.scaleLinear()
 						.domain(yDomain).nice()
 						.range([height - margin.bottom, margin.top]),
 					
 					xAxis = g => g
 						.attr("transform", `translate(0,${height - margin.bottom})`)
-						.call(d3Axis.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
+						.call(d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
 						//need to add xLabel if exists here
 					
 
 					yAxis = g => g
 						.attr("transform", `translate(${margin.left},0)`)
-						.call(d3Axis.axisLeft(yScale))
+						.call(d3.axisLeft(yScale))
 						.call(g => g.select(".domain").remove()),
 						//add yLabel here
 					
-					line = d3Shape.line()
+					line = d3.line()
 						.defined(d => !isNaN(+x(d)))
 						.x(d=>xScale(x(d)))
 						.y(d=>yScale(y(d)));
