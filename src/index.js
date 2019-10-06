@@ -1,1 +1,1 @@
-export {default as erddap_timeseries_chart} from "./erddap-timeseries-chart";
+export {default as erddapTimeseriesChart} from "./erddap-timeseries-chart";
