@@ -1,8 +1,7 @@
-import "d3-array";
-import "d3-selection";
-import "d3-shape";
-import "d3-axis";
-import "d3-scale";
+import {extent} from "d3-array";
+import {line} from "d3-shape";
+import {axisLeft,axisBottom} from "d3-axis";
+import {scaleUtc, scaleLinear} from "d3-scale";
 
 function chart(){
 
@@ -31,8 +30,8 @@ function chart(){
 
 	function calculateDomains(){
 		if(x && y && data){
-			xDomain = d3.extent(data,x);
-			yDomain = d3.extent(data,y)
+			xDomain = extent(data,x);
+			yDomain = extent(data,y)
 		}
 	}
 
@@ -60,7 +59,7 @@ function chart(){
 		x = _;
 
 		if(data){
-			xDomain = d3.extent(data,x)
+			xDomain = extent(data,x)
 		}
 		return chart;
 
@@ -89,7 +88,7 @@ function chart(){
 				
 		z = _;
 		if(data){
-			z_domain = d3.extent(data,z)
+			z_domain = extent(data,z)
 		}
 		return chart;
 
@@ -201,27 +200,27 @@ function chart(){
 		
 		
 		if(xDomain && yDomain){
-			let xScale = d3.scaleUtc()
+			let xScale = scaleUtc()
 					.domain(xDomain)
 					.range([margin.left, width - margin.right]),
 
-				yScale = d3.scaleLinear()
+				yScale = scaleLinear()
 					.domain(yDomain).nice()
 					.range([height - margin.bottom, margin.top]),
 				
 				xAxis = g => g
 					.attr("transform", `translate(0,${height - margin.bottom})`)
-					.call(d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
+					.call(axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
 					//need to add xLabel if exists here
 				
 
 				yAxis = g => g
 					.attr("transform", `translate(${margin.left},0)`)
-					.call(d3.axisLeft(yScale))
+					.call(axisLeft(yScale))
 					.call(g => g.select(".domain").remove()),
 					//add yLabel here
 				
-				line = d3.line()
+				chartLine = line()
 					.defined(d => !isNaN(+x(d)))
 					.x(d=>xScale(x(d)))
 					.y(d=>yScale(y(d)));
@@ -242,7 +241,7 @@ function chart(){
 				.attr("stroke-width", 1.5)
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
-				.attr("d", line);
+				.attr("d", chartLine);
 			
 			
 
