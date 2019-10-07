@@ -6,6 +6,9 @@ Installation
 
 ``npm install``
 
+Updates to github dependencies (erddap-timeseries-chart and erddap-parser) require:
+
+``npm update``
 
 Dependencies
 ------------
@@ -59,3 +62,13 @@ API
 - ``drawCurtain``
 - ``getDataAtX``
 - ``getDataAtXY``
+
+
+NOTES
+-----
+
+For updates to get picked up by erddap-realtime-app:
+
+- Bump package version
+- Run ``npm update`` from erddap-realtime-app
+- Would be fixed by using NPM to publish this
