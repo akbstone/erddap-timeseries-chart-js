@@ -28,24 +28,22 @@ function chart(){
 		chartOptions,
 		_selection;
 
-	function calculateDomains(){
-		let domains = {}
-		if(data){
-			if(x){
-				domains.xDomain = extent(data,x);
+		function calculateDomains(){
+			let domains = {}
+			if(data){
+				if(x){
+					domains.xDomain = extent(data,x);
+				}
+				if(y){
+					domains.yDomain = extent(data,y);
+				}
+				if(z){
+					domains.zDomain = extent(data,z);
+				}
 			}
-			if(y){
-				domains.yDomain = extent(data,y);
-			}
-			if(z){
-				domains.zDomain = extent(data,z);
-			}
+	
+			domains;
 		}
-
-		return domains;
-
-
-	}
 
 	function chart(context){
 		_selection = context.selection ? context.selection() : context;
@@ -95,7 +93,7 @@ function chart(){
 		if (!arguments.length) return z;
 
 		if(typeof _ !== 'function'){
-			throw(Error('y must be a function'))
+			throw(Error('z must be a function'))
 		}
 				
 		z = _;
@@ -201,11 +199,6 @@ function chart(){
 
 	chart.draw = function(){
 
-		let domains = calculateDomains();
-		xDomain = domains.xDomain;
-		yDomain = domains.yDomain;
-		zDomain = domains.zDomain;
-
 		switch(chartType){
 			case 'line':
 				drawLine();
@@ -223,6 +216,10 @@ function chart(){
 		if(!_selection){
 			throw(Error('must be called from a selection'))
 		}
+
+		//could allow scales to be passed in
+		calculateDomains();
+		
 		
 		if(xDomain && yDomain){
 			let xScale = scaleUtc()
