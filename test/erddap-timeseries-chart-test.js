@@ -1,4 +1,4 @@
-const tape = require("tape"),
+const tape = require("tap").test,
       erddap_timeseries_chart = require('../');
 
 const etc = erddap_timeseries_chart.erddapTimeseriesChart();
