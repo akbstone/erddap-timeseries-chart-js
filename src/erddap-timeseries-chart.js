@@ -29,10 +29,22 @@ function chart(){
 		_selection;
 
 	function calculateDomains(){
-		if(x && y && data){
-			xDomain = extent(data,x);
-			yDomain = extent(data,y)
+		let domains = {}
+		if(data){
+			if(x){
+				domains.xDomain = extent(data,x);
+			}
+			if(y){
+				domains.yDomain = extent(data,y);
+			}
+			if(z){
+				domains.zDomain = extent(data,z);
+			}
 		}
+
+		domains;
+
+
 	}
 
 	function chart(context){
