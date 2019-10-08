@@ -42,7 +42,7 @@ function chart(){
 			}
 		}
 
-		domains;
+		return domains;
 
 
 	}
@@ -189,6 +189,11 @@ function chart(){
 
 	chart.draw = function(){
 
+		let domains = calculateDomains();
+		xDomain = domains.xDomain;
+		yDomain = domains.yDomain;
+		zDomain = domains.zDomain;
+
 		switch(chartType){
 			case 'line':
 				drawLine();
@@ -206,10 +211,6 @@ function chart(){
 		if(!_selection){
 			throw(Error('must be called from a selection'))
 		}
-
-		//could allow scales to be passed in
-		calculateDomains();
-		
 		
 		if(xDomain && yDomain){
 			let xScale = scaleUtc()
