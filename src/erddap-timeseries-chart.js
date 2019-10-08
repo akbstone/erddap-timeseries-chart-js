@@ -29,22 +29,10 @@ function chart(){
 		_selection;
 
 	function calculateDomains(){
-		let domains = {}
-		if(data){
-			if(x){
-				domains.xDomain = extent(data,x);
-			}
-			if(y){
-				domains.yDomain = extent(data,y);
-			}
-			if(z){
-				domains.zDomain = extent(data,z);
-			}
+		if(x && y && data){
+			xDomain = extent(data,x);
+			yDomain = extent(data,y)
 		}
-
-		domains;
-
-
 	}
 
 	function chart(context){
@@ -95,13 +83,26 @@ function chart(){
 		if (!arguments.length) return z;
 
 		if(typeof _ !== 'function'){
-			throw(Error('y must be a function'))
+			throw(Error('z must be a function'))
 		}
 				
 		z = _;
 		if(data){
 			z_domain = extent(data,z)
 		}
+		return chart;
+
+	}
+
+	chart.qc = function(_){
+
+		if (!arguments.length) return qc;
+
+		if(typeof _ !== 'function'){
+			throw(Error('qc must be a function'))
+		}
+				
+		qc = _;
 		return chart;
 
 	}
@@ -125,7 +126,7 @@ function chart(){
 		_ = +_;
 
 		if(typeof _ !== 'number' && !isNaN(_)){
-			throw(Error('width must be a number'))
+			throw(Error('height must be a number'))
 		}
 				
 		height = _;
@@ -160,7 +161,7 @@ function chart(){
 	chart.qcOptions = function(_){
 		if (!arguments.length) return qcOptions;
 
-		if(typeof _ !== 'array'){
+		if(!Array.isArray(_)){
 			throw(Error('qcOptions must be an array'))
 		}
 				
@@ -168,12 +169,11 @@ function chart(){
 		return chart;
 	}
 
-	chart.chartType = function(_,options){
-		if (!arguments.length) return qcOptions;
+	chart.chartType = function(_, options){
+		if (!arguments.length) return chartType;
 
-		if(typeof _ !== 'string'){
-			//eventually support function
-			throw(Error('chartType must be an array'))
+		if(typeof _ !== 'string' && typeof _ !== 'function'){
+			throw(Error('chartType must be a string or function'))
 		}
 
 		if(options && typeof options !== 'object'){
