@@ -28,22 +28,22 @@ function chart(){
 		chartOptions,
 		_selection;
 
-	function calculateDomains(){
-		let domains = {}
-		if(data){
-			if(x){
-				domains.xDomain = extent(data,x);
+		function calculateDomains(){
+			let domains = {}
+			if(data){
+				if(x){
+					domains.xDomain = extent(data,x);
+				}
+				if(y){
+					domains.yDomain = extent(data,y);
+				}
+				if(z){
+					domains.zDomain = extent(data,z);
+				}
 			}
-			if(y){
-				domains.yDomain = extent(data,y);
-			}
-			if(z){
-				domains.zDomain = extent(data,z);
-			}
+	
+			domains;
 		}
-
-		domains;
-	}
 
 	function chart(context){
 		_selection = context.selection ? context.selection() : context;
@@ -93,7 +93,7 @@ function chart(){
 		if (!arguments.length) return z;
 
 		if(typeof _ !== 'function'){
-			throw(Error('y must be a function'))
+			throw(Error('z must be a function'))
 		}
 				
 		z = _;
