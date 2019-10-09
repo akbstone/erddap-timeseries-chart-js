@@ -28,6 +28,7 @@ function chart(){
 		data,
 		chartType = 'line',
 		chartOptions,
+		chart_dispatcher = dispatch("mousemove","mouseout"),
 		_selection;
 
 	function calculateDomains(){
@@ -52,6 +53,11 @@ function chart(){
 	function chart(context){
 		_selection = context.selection ? context.selection() : context;
 		chart.draw();
+	}
+
+	chart.on = function(){
+		chart_dispatcher.on.apply(chart_dispatcher,arguments);
+		return chart;
 	}
 
 	chart.data = function(_){
@@ -218,6 +224,7 @@ function chart(){
 		}
 
 	}
+	
 
 
 	function drawLine(){
@@ -273,7 +280,7 @@ function chart(){
 			
 			_selection
 				.on("mousemove touchmove", mousemove)
-				.on("mouseout", mouseout)
+				.on("mouseout touchend", mouseout)
 			
 			const rule = _selection
 				.append("g")
@@ -286,6 +293,7 @@ function chart(){
 
 			function mouseout() {
 				rule.style("display", "none");
+				chart_dispatcher.call('mouseout',chart);
 			}
 
 			function mousemove() {
@@ -295,9 +303,10 @@ function chart(){
 				const a = nonNullData[Math.max(0,Math.min(index - 1,nonNullData.length - 1))];
 				const b = nonNullData[Math.max(0,Math.min(index,nonNullData.length - 1))];
 				const d = selected_x_value - x(a) > x(b) - selected_x_value ? b : a;
-				console.log(d);
+				//console.log(d);
 				rule.style("display", null);
 				rule.attr("transform", `translate(${xScale(d.time)},${margin.top})`);
+				chart_dispatcher.call("mousemove",chart,d);
 				// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
 				// rule.attr("transform", "translate(" + x(d.time) + ",0)");
 			}

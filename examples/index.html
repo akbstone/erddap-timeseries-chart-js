@@ -14,6 +14,7 @@
         <script src="https://d3js.org/d3-scale.v3.min.js"></script>
 
         <script src="https://d3js.org/d3-axis.v1.js"></script>
+        <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
 
 		<script src="../build/erddap-timeseries-chart.js"></script>
 		
@@ -76,7 +77,13 @@
                         .height(height)
                         .x(d=>d.time)
                         .y(d=>d.value)
-                        .chartType('line'),
+                        .chartType('line')
+                        .on('mousemove',function(e){
+                            console.log(e)
+                        })
+                        .on('mouseout',function(e){
+                            console.log(e)
+                        }),
 
 	            chartSvg = d3.select('div.line-chart')
                     .append('svg')

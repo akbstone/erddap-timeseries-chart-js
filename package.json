@@ -35,7 +35,6 @@
     "tap-summary": "^4.0.0"
   },
   "dependencies": {
-    "ci": "^1.0.0",
     "d3-array": "^2.3.2",
     "d3-axis": "^1.0.12",
     "d3-dispatch": "^1.0.5",
