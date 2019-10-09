@@ -67,7 +67,7 @@ API
 STORYBOOK
 ---------
 
-This repository has a set of [storybook](storybook.js.org) stories with live examples. To run a live storybook server:
+This repository has a set of [storybook](//storybook.js.org) stories with live examples. To run a live storybook server:
 
 ```
 $ npm run storybook
