@@ -64,6 +64,17 @@ API
 - ``getDataAtXY``
 
 
+STORYBOOK
+---------
+
+This repository has a set of [storybook](storybook.js.org) stories with live examples. To run a live storybook server:
+
+```
+$ npm run storybook
+```
+
+and open your browser to http://localhost:33333 if it doesn't automatically open.
+
 NOTES
 -----
 

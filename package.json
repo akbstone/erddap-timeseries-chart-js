@@ -22,9 +22,13 @@
     "build": "rm -rf build && mkdir build && rollup -c",
     "pretest": "rollup -c",
     "test": "tap test",
-    "cover": "tap test/*.js --cov --coverage-report=lcov"
+    "cover": "tap test/*.js --cov --coverage-report=lcov",
+    "storybook": "start-storybook -p 33333"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.3",
+    "@storybook/html": "^5.2.3",
+    "babel-loader": "^8.0.6",
     "rollup": "1.1.0",
     "rollup-plugin-node-resolve": "^4.2.3",
     "tap": "^14.6.9",
