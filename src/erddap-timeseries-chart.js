@@ -227,7 +227,8 @@ function chart(){
 		}
 		
 		if(xDomain && yDomain){
-			let xScale = scaleUtc()
+      let fn = (xDomain[0] instanceof Date) ? scaleUtc : scaleLinear,
+          xScale = fn()
 					.domain(xDomain)
 					.range([margin.left, width - margin.right]),
 
