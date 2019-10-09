@@ -1,7 +1,9 @@
-import {extent} from "d3-array";
+import {extent,bisector} from "d3-array";
 import {line} from "d3-shape";
 import {axisLeft,axisBottom} from "d3-axis";
 import {scaleUtc, scaleLinear} from "d3-scale";
+import {mouse} from "d3-selection";
+import {dispatch} from "d3-dispatch";
 
 function chart(){
 
@@ -266,7 +268,30 @@ function chart(){
 				.attr("stroke-width", 1.5)
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
-				.attr("d", chartLine);
+				.attr("d", chartLine)
+			
+			_selection
+				.on("mousemove touchmove", mousemove);
+			
+			const rule = _selection
+				.append("g")
+				.append("line")
+				.attr("y0", 0)
+				.attr("y1", height - margin.bottom - margin.top)
+				.attr("stroke", "steelblue");
+
+			function mousemove() {
+				const bisect = bisector(d => x(d)).left;
+				const selected_x_value = xScale.invert(mouse(this)[0]);
+				const index = bisect(data, selected_x_value, 1);
+				const a = data[index - 1];
+				const b = data[index];
+				const d = selected_x_value - x(a) > x(b) - selected_x_value ? b : a;
+				console.log(d);
+				rule.attr("transform", `translate(${xScale(selected_x_value)},${margin.top})`);
+				// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
+				// rule.attr("transform", "translate(" + x(d.time) + ",0)");
+			}
 			
 			
 
