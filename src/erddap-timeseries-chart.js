@@ -287,10 +287,10 @@ function chart(){
 				const selected_x_value = xScale.invert(mouse(this)[0]);
 				const index = bisect(nonNullData, selected_x_value, 1);
 				const a = nonNullData[Math.max(0,Math.min(index - 1,nonNullData.length - 1))];
-				const b = nonNullData[Math.max(0,Math.min(index-1,nonNullData.length - 1))];
+				const b = nonNullData[Math.max(0,Math.min(index,nonNullData.length - 1))];
 				const d = selected_x_value - x(a) > x(b) - selected_x_value ? b : a;
 				console.log(d);
-				rule.attr("transform", `translate(${xScale(selected_x_value)},${margin.top})`);
+				rule.attr("transform", `translate(${xScale(d.time)},${margin.top})`);
 				// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
 				// rule.attr("transform", "translate(" + x(d.time) + ",0)");
 			}
