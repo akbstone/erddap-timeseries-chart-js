@@ -248,7 +248,7 @@ function chart(){
 					//add yLabel here
 				
 				chartLine = line()
-					.defined(d => !isNaN(+x(d)))
+					.defined(d => !isNaN(+x(d)) && x(d) !== null)
 					.x(d=>xScale(x(d)))
 					.y(d=>yScale(y(d)));
 				
@@ -280,12 +280,14 @@ function chart(){
 				.attr("y1", height - margin.bottom - margin.top)
 				.attr("stroke", "steelblue");
 
+			let nonNullData = data.filter(d=>x(d) !== null && !isNaN(x(d)));
+
 			function mousemove() {
 				const bisect = bisector(d => x(d)).left;
 				const selected_x_value = xScale.invert(mouse(this)[0]);
-				const index = bisect(data, selected_x_value, 1);
-				const a = data[index - 1];
-				const b = data[index];
+				const index = bisect(nonNullData, selected_x_value, 1);
+				const a = nonNullData[Math.max(0,Math.min(index - 1,nonNullData.length - 1))];
+				const b = nonNullData[Math.max(0,Math.min(index-1,nonNullData.length - 1))];
 				const d = selected_x_value - x(a) > x(b) - selected_x_value ? b : a;
 				console.log(d);
 				rule.attr("transform", `translate(${xScale(selected_x_value)},${margin.top})`);
