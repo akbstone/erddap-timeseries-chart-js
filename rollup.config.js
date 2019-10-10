@@ -1,6 +1,6 @@
 export default {
   input: 'src/index.js',
-  external: [ 'd3-selection','d3-array','d3-shape','d3-axis','d3-scale','d3-dispatch','d3-color'],
+  external: [ 'd3-selection','d3-array','d3-shape','d3-axis','d3-scale','d3-dispatch','d3-color','d3-scale-chromatic'],
   output:{
     format: 'umd',
     name:'d3',
@@ -14,7 +14,8 @@ export default {
       'd3-axis':'d3',
       'd3-scale':'d3',
       'd3-dispatch':'d3',
-      'd3-color':'d3'
+      'd3-color':'d3',
+      'd3-scale-chromatic':'d3'
     }
   }
 }

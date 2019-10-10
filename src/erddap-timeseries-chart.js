@@ -5,6 +5,7 @@ import {scaleUtc, scaleLinear} from "d3-scale";
 import {mouse} from "d3-selection";
 import {dispatch} from "d3-dispatch";
 import {rgb} from "d3-color";
+import {interpolateMagma} from "d3-scale-chromatic"
 
 function chart(){
 
@@ -260,7 +261,7 @@ function chart(){
 			ctx = canvas.getContext('2d'),
 			yScale = scaleLinear()
 						.domain(yDomain)
-						.range(["red","blue"]),
+						.range([0,1]),
 
 			xScale = scaleUtc()
 						.domain(xDomain)
@@ -315,7 +316,7 @@ function chart(){
 				let vals = grid[j][k],
 					pixel_index = j*grid[0].length + k
 				if(vals){
-					let c = rgb(yScale(mean(vals)));
+					let c = rgb(interpolateMagma(yScale(mean(vals))));
 					pixels[pixel_index] = (c.r << 0) + (c.g << 8) + (c.b << 16) + (alpha << 24);
 				}else{
 					pixels[pixel_index] = 0x00FFFFFF

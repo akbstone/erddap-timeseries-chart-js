@@ -19,6 +19,10 @@
         <script src="https://d3js.org/d3-dsv.v1.js"></script>
         <script src="https://d3js.org/d3-fetch.v1.js"></script>
 
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
 		<script src="../build/erddap-timeseries-chart.js"></script>
 		
 	</head>
@@ -38,7 +42,8 @@
                     end = new Date(2018,4,14),
                     start = new Date(+end - 7*day),
                     dataset_id = 'amelia-20180501T0000',
-                    variables = ['time','depth','salinity','profile_id'],
+                    variable = 'temperature',
+                    variables = ['time','depth',variable,'profile_id'],
                     request_url = 'https://gliders.ioos.us/erddap/tabledap/' + dataset_id + '.csv?' + variables.join('%2C') + '&time%3E=' + start.toISOString() + '&time%3C=' + end.toISOString(),
                     data;
 
@@ -70,7 +75,7 @@
                             .width(width)
                             .height(height)
                             .x(d=>d.time)
-                            .y(d=>+d.salinity)
+                            .y(d=>+d[variable])
                             .z(d=>-1 * +d.depth)
                             .chartType('curtain')
                             .on('mousemove',function(e){
