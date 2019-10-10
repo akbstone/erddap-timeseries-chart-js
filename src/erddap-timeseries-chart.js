@@ -356,16 +356,17 @@ function chart(){
 
 			let grouped_by_x = group(data,d=>x(d)),
 				uniq_x_vals = Array.from(grouped_by_x.keys()),
-				closest_x_val = bisect(uniq_x_vals, selected_x_value, 1),
-				// profile = Array.from(grouped_by_x)[closest_x_val];
-				profile = Array.from(grouped_by_x).filter(d => d[0] == String(uniq_x_vals[closest_x_val]))
+				index = bisect(uniq_x_vals, selected_x_value, 1),
+				// profile = Array.from(grouped_by_x)[index];
+				profile = Array.from(grouped_by_x)
+					.filter(d => d[0] == String(uniq_x_vals[index]))
 					.map(d => d[1]).flat();
 
-				
+			// 
 
-			
+			// console.log(uniq_x_vals[index])
 			rule.style("display", null);
-			rule.attr("transform", `translate(${xScale(d.time)},${margin.top})`);
+			rule.attr("transform", `translate(${xScale(uniq_x_vals[index])},${margin.top})`);
 			chart_dispatcher.call("mousemove", chart, profile);
 			// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
 			// rule.attr("transform", "translate(" + x(d.time) + ",0)");
