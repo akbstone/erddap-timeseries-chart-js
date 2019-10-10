@@ -227,6 +227,10 @@ function chart(){
 
 	chart.draw = function(){
 
+		data = data.sort(function(a,b){
+			return x(a) - x(b);
+		})
+
 		let domains = calculateDomains();
 		xDomain = domains.xDomain;
 		yDomain = domains.yDomain;
@@ -266,31 +270,32 @@ function chart(){
 			xScale = scaleUtc()
 						.domain(xDomain)
 						.range([0,width]),
-			_zDomain = [Math.min.apply(null,chart.getZDomain()),0],
+
 			zScale = scaleLinear()
 						.domain(zDomain)
 						.range([height,0]),
 
-			grid = new Array(Math.floor(height)),
+			cell_width = chartOptions.cell_width || 1,
+			cell_height = chartOptions.cell_height || 1,
+			grid = new Array(Math.floor(height/cell_height)),
 			pixels = Array(Math.floor(width) * Math.floor(height)),
-			alpha = 255,
-			_color;
+			alpha = 255;
 
 		for(var _y=0;_y < grid.length; ++ _y){
-			grid[_y] = new Array(Math.floor(width));
+			grid[_y] = new Array(Math.floor(width/cell_width));
 		}
 
 		chart.data().forEach(d=>{
 
 			let x_cell = Math.max(0,
 					Math.min(
-						Math.round(xScale(x(d))),
+						Math.floor(xScale(x(d))/cell_width),
 						grid[0].length - 1
 					)
 				),
 				z_cell = Math.max(0,
 					Math.min(
-						Math.round(zScale(z(d))),
+						Math.floor(zScale(z(d))/cell_height),
 						grid.length - 1
 					)
 				);
@@ -311,20 +316,33 @@ function chart(){
 
 		})
 
-		for(var j=0;j < grid.length;j ++){
-			for(var k=0;k < grid[j].length;k ++){
-				let vals = grid[j][k],
-					pixel_index = j*grid[0].length + k
-				if(vals){
+		for(var gy=0;gy < grid.length;gy ++){
+			for(var gx=0;gx < grid[gy].length;gx ++){
+				let vals = grid[gy][gx],
+					//pixel_index = gx*grid[0].length + gy,
+					_gy = gy*grid[0].length*cell_height,
+					_gx = gx*cell_width,
+					c = vals ? rgb(interpolateMagma(yScale(mean(vals)))) : null,
+					b = c ? (c.r << 0) + (c.g << 8) + (c.b << 16) + (alpha << 24) : 0x00FFFFFF;
+
+				for(var cy = 0;cy < cell_height;cy ++){
+					for(var cx =0;cx < cell_width;cx ++){
+						let pixel_index = _gy + cy + _gx + cx;
+						pixels[pixel_index] = b;
+					}
+				}
+				
+
+				//grid[j][k] = b;
+				/* if(vals){
 					let c = rgb(interpolateMagma(yScale(mean(vals))));
 					pixels[pixel_index] = (c.r << 0) + (c.g << 8) + (c.b << 16) + (alpha << 24);
 				}else{
 					pixels[pixel_index] = 0x00FFFFFF
-				}
+				} */
 			}
 		}
 		
-
 		var buf8 = new Uint8Array((new Uint32Array(pixels)).buffer),
 		imageData = ctx.getImageData(0,0,Math.floor(width),Math.floor(height));
 
@@ -356,7 +374,7 @@ function chart(){
 
 				yAxis = g => g
 					.attr("transform", `translate(${margin.left},0)`)
-					.call(axisLeft(yScale))
+					.call(axisLeft(yScale).ticks(height / 40).tickSizeOuter(0))
 					.call(g => g.select(".domain").remove()),
 					//add yLabel here
 				
@@ -403,7 +421,8 @@ function chart(){
 
 			function mousemove() {
 				const bisect = bisector(d => x(d)).left;
-				const selected_x_value = xScale.invert(mouse(this)[0]);
+				const mouse_pos = mouse(this);
+				const selected_x_value = xScale.invert(mouse_pos[0]);
 				const index = bisect(nonNullData, selected_x_value, 1);
 				const a = nonNullData[Math.max(0,Math.min(index - 1,nonNullData.length - 1))];
 				const b = nonNullData[Math.max(0,Math.min(index,nonNullData.length - 1))];
