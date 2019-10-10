@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<script src="https://d3js.org/d3-selection.v1.min.js"></script>
+        <script src="https://d3js.org/d3-path.v1.min.js"></script>
+        <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time.v1.min.js"></script>
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-format.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time.v1.min.js"></script>
+        <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+        <script src="https://d3js.org/d3-scale.v3.min.js"></script>
+
+        <script src="https://d3js.org/d3-axis.v1.js"></script>
+        <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+
+        <script src="https://d3js.org/d3-dsv.v1.js"></script>
+        <script src="https://d3js.org/d3-fetch.v1.js"></script>
+
+		<script src="../build/erddap-timeseries-chart.js"></script>
+		
+	</head>
+	<body>
+        <div class="curtain-plot"></div>
+        <canvas class="other-canvas" width="1264" height="200"></canvas>
+        <script type="text/javascript">
+            const uniq = (arrArg) => {
+                return arrArg.filter((elem, pos, arr) => {
+                    return arr.indexOf(elem) == pos;
+                });
+            }
+
+            (async () => {
+
+                let day = 24*60*60*1000,
+                    end = new Date(2018,4,14),
+                    start = new Date(+end - 7*day),
+                    dataset_id = 'amelia-20180501T0000',
+                    variables = ['time','depth','salinity','profile_id'],
+                    request_url = 'https://gliders.ioos.us/erddap/tabledap/' + dataset_id + '.csv?' + variables.join('%2C') + '&time%3E=' + start.toISOString() + '&time%3C=' + end.toISOString(),
+                    data;
+
+                try {
+                    data = await d3.csv(request_url)
+                    data.shift();
+                    data = data.map(d=>{
+                        return Object.assign(
+                            d,
+                            {
+                                time:new Date(d.time)
+                            }
+                        )
+                    })
+
+                } catch (e) {
+                    throw(new Error(e))
+                    // Deal with the fact the chain failed
+                }
+
+                
+                let outer_width = d3.select('.curtain-plot').node().offsetWidth,
+                    outer_height = 200,
+                    width = outer_width,
+                    height = outer_height,
+
+                    chart = d3.erddapTimeseriesChart()
+                            .data(data)
+                            .width(width)
+                            .height(height)
+                            .x(d=>d.time)
+                            .y(d=>+d.salinity)
+                            .z(d=>-1 * +d.depth)
+                            .chartType('curtain')
+                            .on('mousemove',function(e){
+                                console.log(e)
+                            })
+                            .on('mouseout',function(e){
+                                console.log(e)
+                            }),
+                    
+                    canvas = d3.select('.curtain-plot')
+                                .append('canvas')
+                                    .attr('width',width)
+                                    .attr('height',height)
+                                
+                                .call(chart)
+
+
+            })();
+                
+                    
+
+	            
+                
+                
+
+		</script>
+
+
+	</body>
+</html>

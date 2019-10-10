@@ -1,9 +1,10 @@
-import {extent,bisector} from "d3-array";
+import {extent,mean,bisector} from "d3-array";
 import {line} from "d3-shape";
 import {axisLeft,axisBottom} from "d3-axis";
 import {scaleUtc, scaleLinear} from "d3-scale";
 import {mouse} from "d3-selection";
 import {dispatch} from "d3-dispatch";
+import {rgb} from "d3-color";
 
 function chart(){
 
@@ -27,7 +28,7 @@ function chart(){
 	    qcOptions,
 		data,
 		chartType = 'line',
-		chartOptions,
+		chartOptions = {},
 		chart_dispatcher = dispatch("mousemove","mouseout"),
 		selection;
 
@@ -65,6 +66,18 @@ function chart(){
 				
 		selection = _;
 		return chart;
+	}
+
+	chart.getXDomain = function(){
+		return xDomain;
+	}
+
+	chart.getYDomain = function(){
+		return yDomain;
+	}
+
+	chart.getZDomain = function(){
+		return zDomain;
 	}
 
 	chart.data = function(_){
@@ -238,8 +251,84 @@ function chart(){
 	}
 	
 	function drawCurtain(){
-		console.log(selection)
-		debugger;
+
+		if(!selection){
+			throw(Error('must be called from a selection'))
+		}
+		
+		let	canvas = this.selection().node(),
+			ctx = canvas.getContext('2d'),
+			yScale = scaleLinear()
+						.domain(yDomain)
+						.range(["red","blue"]),
+
+			xScale = scaleUtc()
+						.domain(xDomain)
+						.range([0,width]),
+			_zDomain = [Math.min.apply(null,chart.getZDomain()),0],
+			zScale = scaleLinear()
+						.domain(zDomain)
+						.range([height,0]),
+
+			grid = new Array(Math.floor(height)),
+			pixels = Array(Math.floor(width) * Math.floor(height)),
+			alpha = 255,
+			_color;
+
+		for(var _y=0;_y < grid.length; ++ _y){
+			grid[_y] = new Array(Math.floor(width));
+		}
+
+		chart.data().forEach(d=>{
+
+			let x_cell = Math.max(0,
+					Math.min(
+						Math.round(xScale(x(d))),
+						grid[0].length - 1
+					)
+				),
+				z_cell = Math.max(0,
+					Math.min(
+						Math.round(zScale(z(d))),
+						grid.length - 1
+					)
+				);
+			
+			if(!isNaN(x_cell) && !isNaN(z_cell)){
+				if(grid[z_cell] === undefined){
+					debugger;
+				}
+				if(grid[z_cell][x_cell]){
+					if(!Array.isArray(grid[z_cell][x_cell])){
+						debugger;
+					}
+					grid[z_cell][x_cell].push(y(d))
+				}else{
+					grid[z_cell][x_cell] = [y(d)];
+				}
+			}
+
+		})
+
+		for(var j=0;j < grid.length;j ++){
+			for(var k=0;k < grid[j].length;k ++){
+				let vals = grid[j][k],
+					pixel_index = j*grid[0].length + k
+				if(vals){
+					let c = rgb(yScale(mean(vals)));
+					pixels[pixel_index] = (c.r << 0) + (c.g << 8) + (c.b << 16) + (alpha << 24);
+				}else{
+					pixels[pixel_index] = 0x00FFFFFF
+				}
+			}
+		}
+		
+
+		var buf8 = new Uint8Array((new Uint32Array(pixels)).buffer),
+		imageData = ctx.getImageData(0,0,Math.floor(width),Math.floor(height));
+
+		imageData.data.set(buf8);
+		ctx.putImageData(imageData,0,0);
 	}
 
 	function drawLine(){
@@ -249,7 +338,7 @@ function chart(){
 		}
 		
 		if(xDomain && yDomain){
-      let fn = (xDomain[0] instanceof Date) ? scaleUtc : scaleLinear,
+      	let fn = (xDomain[0] instanceof Date) ? scaleUtc : scaleLinear,
           xScale = fn()
 					.domain(xDomain)
 					.range([margin.left, width - margin.right]),
