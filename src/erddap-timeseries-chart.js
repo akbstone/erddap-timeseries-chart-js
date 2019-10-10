@@ -29,7 +29,7 @@ function chart(){
 		chartType = 'line',
 		chartOptions,
 		chart_dispatcher = dispatch("mousemove","mouseout"),
-		_selection;
+		selection;
 
 	function calculateDomains(){
 		let domains = {}
@@ -51,12 +51,19 @@ function chart(){
 	}
 
 	function chart(context){
-		_selection = context.selection ? context.selection() : context;
+		chart.selection(context.selection ? context.selection() : context);
 		chart.draw();
 	}
 
 	chart.on = function(){
 		chart_dispatcher.on.apply(chart_dispatcher,arguments);
+		return chart;
+	}
+
+	chart.selection = function(_){
+		if (!arguments.length) return selection;
+				
+		selection = _;
 		return chart;
 	}
 
@@ -231,13 +238,13 @@ function chart(){
 	}
 	
 	function drawCurtain(){
-		console.log(_selection)
+		console.log(selection)
 		debugger;
 	}
 
 	function drawLine(){
 
-		if(!_selection){
+		if(!selection){
 			throw(Error('must be called from a selection'))
 		}
 		
@@ -270,14 +277,14 @@ function chart(){
 				
 
 			
-			_selection.append("g")
+			selection.append("g")
 				.call(xAxis);
 			
-			_selection.append("g")
+			selection.append("g")
 				.call(yAxis);
 			
 			//should make styles properties that can be overridden
-			_selection.append("path")
+			selection.append("path")
 				.datum(data)
 				.attr("fill", "none")
 				.attr("stroke", "#333")
@@ -286,11 +293,11 @@ function chart(){
 				.attr("stroke-linecap", "round")
 				.attr("d", chartLine)
 			
-			_selection
+			selection
 				.on("mousemove touchmove", mousemove)
 				.on("mouseout touchend", mouseout)
 			
-			const rule = _selection
+			const rule = selection
 				.append("g")
 				.append("line")
 				.attr("y0", 0)
