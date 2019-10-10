@@ -1,4 +1,4 @@
-import {extent,mean,bisector} from "d3-array";
+import {extent,mean,bisector, group} from "d3-array";
 import {line} from "d3-shape";
 import {axisLeft,axisBottom} from "d3-axis";
 import {scaleUtc, scaleLinear} from "d3-scale";
@@ -30,6 +30,7 @@ function chart(){
 		data,
 		chartType = 'line',
 		chartOptions = {},
+		rule,
 		chart_dispatcher = dispatch("mousemove","mouseout"),
 		selection;
 
@@ -54,6 +55,13 @@ function chart(){
 
 	function chart(context){
 		chart.selection(context.selection ? context.selection() : context);
+		rule = selection
+				.append("g")
+				.append("line")
+				.attr("y0", 0)
+				.attr("y1", height - margin.bottom - margin.top)
+				.attr("stroke", "steelblue");
+
 		chart.draw();
 	}
 
@@ -274,6 +282,10 @@ function chart(){
 			zScale = scaleLinear()
 						.domain(zDomain)
 						.range([height,0]),
+			bisect = bisector(d => d).left,
+			gpd = group(data,d=>String(x(d))),
+			isDate = x(data[0]) instanceof Date ? true : false,
+			uniq_x_vals = Array.from(gpd.keys()).map(d=>isDate ? new Date(d) : d),
 
 			cell_width = chartOptions.cell_width || 1,
 			cell_height = chartOptions.cell_height || 1,
@@ -348,6 +360,42 @@ function chart(){
 
 		imageData.data.set(buf8);
 		ctx.putImageData(imageData,0,0);
+
+		selection
+			.on("mousemove touchmove", mousemove)
+			.on("mouseout touchend", mouseout);
+
+		// let nonNullData = data.filter(d=>x(d) !== null && !isNaN(x(d)));
+
+		function mouseout() {
+			rule.style("display", "none");
+			chart_dispatcher.call('mouseout',chart);
+		}
+
+		function mousemove() {
+			
+			const selected_x_value = xScale.invert(mouse(this)[0]);
+			let index = bisect(uniq_x_vals, selected_x_value, 1),
+				profile = gpd.get(String(uniq_x_vals[index]));
+			// let grouped_by_x = group(data,d=>x(d)),
+			// 	uniq_x_vals = Array.from(grouped_by_x.keys()),
+			// 	index = bisect(uniq_x_vals, selected_x_value, 1),
+			// 	// profile = Array.from(grouped_by_x)[index];
+			// 	profile = Array.from(grouped_by_x)
+			// 		.filter(d => d[0] == String(uniq_x_vals[index]))
+			// 		.map(d => d[1]).flat();
+
+			// 
+
+			// console.log(uniq_x_vals[index])
+			rule.style("display", null);
+			rule.attr("transform", `translate(${xScale(uniq_x_vals[index])},${margin.top})`);
+			chart_dispatcher.call("mousemove", chart, profile);
+			// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
+			// rule.attr("transform", "translate(" + x(d.time) + ",0)");
+		}
+
+
 	}
 
 	function drawLine(){
@@ -405,12 +453,6 @@ function chart(){
 				.on("mousemove touchmove", mousemove)
 				.on("mouseout touchend", mouseout)
 			
-			const rule = selection
-				.append("g")
-				.append("line")
-				.attr("y0", 0)
-				.attr("y1", height - margin.bottom - margin.top)
-				.attr("stroke", "steelblue");
 
 			let nonNullData = data.filter(d=>x(d) !== null && !isNaN(x(d)));
 
