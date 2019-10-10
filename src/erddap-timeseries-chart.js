@@ -103,13 +103,10 @@ function chart(){
 		if (!arguments.length) return z;
 
 		if(typeof _ !== 'function'){
-			throw(Error('y must be a function'))
+			throw(Error('z must be a function'))
 		}
 				
 		z = _;
-		if(data){
-			z_domain = extent(data,z)
-		}
 		return chart;
 
 	}
@@ -214,18 +211,29 @@ function chart(){
 		yDomain = domains.yDomain;
 		zDomain = domains.zDomain;
 
-		switch(chartType){
-			case 'line':
-				drawLine();
-				break;
-			
-			default:
-				throw(Error('Unsupported chart type'))
+		if(typeof chartType == 'function'){
+			chartType.call(chart);
+		}else{
+			switch(chartType){
+				case 'line':
+					drawLine.call(chart);
+					break;
+				
+				case 'curtain':
+					drawCurtain.call(chart);
+					break;
+				
+				default:
+					throw(Error('Unsupported chart type'))
+			}
 		}
 
 	}
 	
-
+	function drawCurtain(){
+		console.log(_selection)
+		debugger;
+	}
 
 	function drawLine(){
 
