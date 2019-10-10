@@ -282,6 +282,10 @@ function chart(){
 			zScale = scaleLinear()
 						.domain(zDomain)
 						.range([height,0]),
+			bisect = bisector(d => d).left,
+			gpd = group(data,d=>String(x(d))),
+			isDate = x(data[0]) instanceof Date ? true : false,
+			uniq_x_vals = Array.from(gpd.keys()).map(d=>isDate ? new Date(d) : d),
 
 			cell_width = chartOptions.cell_width || 1,
 			cell_height = chartOptions.cell_height || 1,
@@ -369,16 +373,17 @@ function chart(){
 		}
 
 		function mousemove() {
-			const bisect = bisector(d => d).left;
+			
 			const selected_x_value = xScale.invert(mouse(this)[0]);
-
-			let grouped_by_x = group(data,d=>x(d)),
-				uniq_x_vals = Array.from(grouped_by_x.keys()),
-				index = bisect(uniq_x_vals, selected_x_value, 1),
-				// profile = Array.from(grouped_by_x)[index];
-				profile = Array.from(grouped_by_x)
-					.filter(d => d[0] == String(uniq_x_vals[index]))
-					.map(d => d[1]).flat();
+			let index = bisect(uniq_x_vals, selected_x_value, 1),
+				profile = gpd.get(String(uniq_x_vals[index]));
+			// let grouped_by_x = group(data,d=>x(d)),
+			// 	uniq_x_vals = Array.from(grouped_by_x.keys()),
+			// 	index = bisect(uniq_x_vals, selected_x_value, 1),
+			// 	// profile = Array.from(grouped_by_x)[index];
+			// 	profile = Array.from(grouped_by_x)
+			// 		.filter(d => d[0] == String(uniq_x_vals[index]))
+			// 		.map(d => d[1]).flat();
 
 			// 
 
