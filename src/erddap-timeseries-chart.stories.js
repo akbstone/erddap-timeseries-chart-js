@@ -97,6 +97,18 @@ export const gliderDataTemperature = () => {
   return makeEl(ch);
 }
 
+export const gliderDataDepth = () => {
+  const ch = chart()
+    .data(gliderData)
+    .chartType('line')
+    .width(800)
+    .height(400)
+    .x(d => d.time)
+    .y(d => 0 - +d.depth);
+
+  return makeEl(ch);
+}
+
 export const gliderCurtainPlot = () => {
   const ch = chart()
     .data(gliderData)
