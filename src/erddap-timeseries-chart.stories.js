@@ -135,3 +135,17 @@ export const gliderCurtainPlotSmaller = () => {
   return makeEl(ch, 800, 200, 'canvas');
 }
 
+
+export const gliderCurtainPlotViridis = () => {
+  const ch = chart()
+    .data(gliderData)
+    .chartType('curtain')
+    .width(800)
+    .height(400)
+    .curtainScheme('viridis')
+    .x(d => d.time)
+    .y(d => +d.temperature)
+    .z(d => -1 * +d.depth);
+
+  return makeEl(ch, 800, 400, 'canvas');
+}

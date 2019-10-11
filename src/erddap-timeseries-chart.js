@@ -5,7 +5,7 @@ import {scaleUtc, scaleLinear} from "d3-scale";
 import {mouse} from "d3-selection";
 import {dispatch} from "d3-dispatch";
 import {rgb} from "d3-color";
-import {interpolateMagma} from "d3-scale-chromatic"
+import * as scaleChromatic from "d3-scale-chromatic";
 
 function chart(){
 
@@ -31,6 +31,7 @@ function chart(){
 		chartType = 'line',
 		chartOptions = {},
 		chart_dispatcher = dispatch("mousemove","mouseout"),
+    interpolateFn = scaleChromatic.interpolateMagma,
 		selection;
 
 	function calculateDomains(){
@@ -248,8 +249,21 @@ function chart(){
 					throw(Error('Unsupported chart type'))
 			}
 		}
-
 	}
+
+  chart.curtainScheme = function(colorScheme) {
+    if (!colorScheme.startsWith("interpolate")) {
+      colorScheme = `interpolate${colorScheme.charAt(0).toUpperCase()}${colorScheme.slice(1)}`;
+    }
+
+    if (typeof scaleChromatic[colorScheme] !== "function") {
+
+      throw new Error(`Interpolation colorScheme ${colorScheme} not found in d3.scaleChromatic`);
+    }
+
+    interpolateFn = scaleChromatic[colorScheme];
+    return chart;
+  }
 	
 	function drawCurtain(){
 
@@ -316,7 +330,7 @@ function chart(){
 				let vals = grid[j][k],
 					pixel_index = j*grid[0].length + k
 				if(vals){
-					let c = rgb(interpolateMagma(yScale(mean(vals))));
+					let c = rgb(interpolateFn(yScale(mean(vals))));
 					pixels[pixel_index] = (c.r << 0) + (c.g << 8) + (c.b << 16) + (alpha << 24);
 				}else{
 					pixels[pixel_index] = 0x00FFFFFF
