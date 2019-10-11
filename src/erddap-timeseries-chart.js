@@ -361,7 +361,7 @@ function chart(){
 					//add yLabel here
 				
 				chartLine = line()
-					.defined(d => !isNaN(+x(d)) && x(d) !== null)
+					.defined(d => !isNaN(+x(d)) && x(d) !== null && !isNaN(+y(d)))
 					.x(d=>xScale(x(d)))
 					.y(d=>yScale(y(d)));
 				
