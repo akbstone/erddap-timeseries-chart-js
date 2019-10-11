@@ -1,6 +1,12 @@
 import chart from './erddap-timeseries-chart';
 import { select } from 'd3-selection';
-const gliderData = require('../test/glider-data.json');
+
+const gliderData = require('../test/glider-data.json').map(d=>{
+  return {
+    ...d,
+    time: new Date(d.time)
+  }
+});
 
 let data = [
   {
@@ -55,7 +61,19 @@ export const basic = () => {
   return makeEl(ch);
 };
 
-export const nonDate = () => {
+export const basicSquare = () => {
+  const ch = chart()
+    .data(data)
+    .width(500)
+    .height(500)
+    .chartType('line')
+    .x(d => d.time)
+    .y(d => d.value);
+
+  return makeEl(ch, 500, 500);
+};
+
+export const nonDateX = () => {
   const ch = chart()
     .data(data)
     .chartType('line')
@@ -67,16 +85,21 @@ export const nonDate = () => {
   return makeEl(ch);
 }
 
-export const curtainPlot = () => {
-  let localData = gliderData.map(d=>{
-    return {
-      ...d,
-      time: new Date(d.time)
-    }
-  });
-
+export const gliderDataTemperature = () => {
   const ch = chart()
-    .data(localData)
+    .data(gliderData)
+    .chartType('line')
+    .width(800)
+    .height(400)
+    .x(d => d.time)
+    .y(d => +d.temperature);
+
+  return makeEl(ch);
+}
+
+export const gliderCurtainPlot = () => {
+  const ch = chart()
+    .data(gliderData)
     .chartType('curtain')
     .width(800)
     .height(400)
@@ -86,3 +109,17 @@ export const curtainPlot = () => {
 
   return makeEl(ch, 800, 400, 'canvas');
 }
+
+export const gliderCurtainPlotSmaller = () => {
+  const ch = chart()
+    .data(gliderData)
+    .chartType('curtain')
+    .width(800)
+    .height(200)
+    .x(d => d.time)
+    .y(d => +d.temperature)
+    .z(d => -1 * +d.depth);
+
+  return makeEl(ch, 800, 200, 'canvas');
+}
+
