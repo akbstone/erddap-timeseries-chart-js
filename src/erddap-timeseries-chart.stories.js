@@ -1,5 +1,6 @@
 import chart from './erddap-timeseries-chart';
 import { select } from 'd3-selection';
+const gliderData = require('../test/glider-data.json');
 
 let data = [
   {
@@ -29,15 +30,15 @@ let data = [
   }
 ]
 
-function makeEl(chart, width = 800, height = 400) {
-  const svgEl = document.createElement('div'),
-    svg = select(svgEl)
-      .append('svg')
+function makeEl(chart, width = 800, height = 400, elType = 'svg') {
+  const containerEl = document.createElement('div'),
+    el = select(containerEl)
+      .append(elType)
       .attr('width', width)
       .attr('height', height)
       .call(chart);
 
-  return svgEl;
+  return containerEl;
 }
 
 export default { title: 'ERDDAP Timeseries Chart' };
@@ -64,4 +65,24 @@ export const nonDate = () => {
     .y(d => d.value);
 
   return makeEl(ch);
+}
+
+export const curtainPlot = () => {
+  let localData = gliderData.map(d=>{
+    return {
+      ...d,
+      time: new Date(d.time)
+    }
+  });
+
+  const ch = chart()
+    .data(localData)
+    .chartType('curtain')
+    .width(800)
+    .height(400)
+    .x(d => d.time)
+    .y(d => +d.temperature)
+    .z(d => -1 * +d.depth);
+
+  return makeEl(ch, 800, 400, 'canvas');
 }
