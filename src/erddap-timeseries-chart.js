@@ -351,14 +351,14 @@ function chart(){
 				xAxis = g => g
 					.attr("transform", `translate(0,${height - margin.bottom})`)
 					.call(axisBottom(xScale).ticks(width / 80).tickSizeOuter(0)),
-					//need to add xLabel if exists here
+          // @TODO: need to add xLabel if exists here
 				
 
 				yAxis = g => g
 					.attr("transform", `translate(${margin.left},0)`)
 					.call(axisLeft(yScale))
 					.call(g => g.select(".domain").remove()),
-					//add yLabel here
+					// @TODO add yLabel here
 				
 				chartLine = line()
 					.defined(d => !isNaN(+x(d)) && x(d) !== null && !isNaN(+y(d)))
@@ -373,7 +373,7 @@ function chart(){
 			selection.append("g")
 				.call(yAxis);
 			
-			//should make styles properties that can be overridden
+			// @TODO should make styles properties that can be overridden
 			selection.append("path")
 				.datum(data)
 				.attr("fill", "none")
@@ -419,7 +419,7 @@ function chart(){
 			
 
 			
-			//option to overlay dots on line
+      // @TODO: option to overlay dots on line
 
 		}
 
