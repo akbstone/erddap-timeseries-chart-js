@@ -31,6 +31,7 @@ function chart(){
 		chartType = 'line',
 		chartOptions = {},
 		rule,
+		dot,
 		chart_dispatcher = dispatch("mousemove","mouseout"),
     interpolateFn = scaleChromatic.interpolateMagma,
 		selection;
@@ -56,14 +57,24 @@ function chart(){
 
 	function chart(context){
 		chart.selection(context.selection ? context.selection() : context);
-		rule = selection
-				.append("g")
-				.append("line")
-				.attr("y0", 0)
-				.attr("y1", height - margin.bottom - margin.top)
-				.attr("stroke", "steelblue");
-
 		chart.draw();
+
+		rule = selection
+				.append("g").attr('class','highlight')
+
+		rule.append("line")
+				.attr("y0", margin.top)
+				.attr("y1", height - margin.bottom)
+				.attr("stroke", "steelblue")
+				.style('pointer-events','none');
+
+		dot = rule.append('circle')
+				.attr('r',4)
+				.attr('fill','#FFF')
+				.attr('stroke','steelblue')
+				.style('pointer-events','none')
+
+		
 	}
 
 	chart.on = function(){
@@ -475,21 +486,46 @@ function chart(){
 				chart_dispatcher.call('mouseout',chart);
 			}
 
-			function mousemove() {
+			function highlightAtX(xPos) {
+				const selected_x_value = xScale.invert(xPos);
 				const bisect = bisector(d => x(d)).left;
-				const mouse_pos = mouse(this);
-				const selected_x_value = xScale.invert(mouse_pos[0]);
 				const index = bisect(nonNullData, selected_x_value, 1);
 				const a = nonNullData[Math.max(0,Math.min(index - 1,nonNullData.length - 1))];
 				const b = nonNullData[Math.max(0,Math.min(index,nonNullData.length - 1))];
 				const d = selected_x_value - x(a) > x(b) - selected_x_value ? b : a;
 				//console.log(d);
+				highlightRow(d)
+			}
+
+			function highlightAtIndex(index) {
+				const d = nonNullData[Math.max(0,Math.min(index,nonNullData.length - 1))];
+				highlightRow(d)
+				//console.log(d);
+				
+
+			}
+
+			function highlightRow(row){
 				rule.style("display", null);
-				rule.attr("transform", `translate(${xScale(d.time)},${margin.top})`);
-				chart_dispatcher.call("mousemove",chart,d);
+				rule.attr("transform", `translate(${xScale(x(row))},0)`);
+				dot.attr('cy',yScale(y(row)));
+				
+				chart_dispatcher.call("mousemove",chart,row);
+
+			}
+
+			function mousemove() {
+				
+				const mouse_pos = mouse(this);
+				highlightAtX(mouse_pos[0]);
+				
 				// rule.select("line1text").text(d.pCO2_uatm_Avg.toFixed(2));
 				// rule.attr("transform", "translate(" + x(d.time) + ",0)");
 			}
+
+			chart.highlightAtIndex = highlightAtIndex;
+			chart.highlightAtX = highlightAtX;
+			chart.highlightRow = highlightRow;
 			
 			
 
